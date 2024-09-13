@@ -19,20 +19,19 @@ class Cart extends StatelessWidget {
           Cartlogic obj = BlocProvider.of(context);
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: Color(0xFFBBDBE2),
               elevation: 1,
               title: Text(
-                'SALVOVA',
+                'Shopping cart',
                 style: TextStyle(
                   fontSize: 30,
-                  color: Colors.black,
+                  color:Color(0xFF51858C),
                   fontWeight: FontWeight.bold,
                 ),
               ),
               centerTitle: true,
               leading: Icon(
                 Icons.arrow_back,
-                color: Colors.black,
+                color:Color(0xFF51858C),
               ),
             ),
             body: Padding(
@@ -258,14 +257,15 @@ class Cart extends StatelessWidget {
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.black,
+                      backgroundColor: Color(0xFF51858C),
                     ),
                     child: Center(
                       child: Text(
                         'Checkout',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
                           color: Colors.white,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
