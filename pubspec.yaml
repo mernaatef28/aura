@@ -37,10 +37,14 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_bloc: ^8.1.6
   bloc: ^8.1.4
+
   firebase_core: ^3.4.1
   cloud_firestore: ^5.4.1
   firebase_auth: ^5.2.1
   firebase_storage: ^12.3.0
+  carousel_slider: ^5.0.0
+  flutter_product_card: ^0.0.6
+
 
 dev_dependencies:
   flutter_test:
