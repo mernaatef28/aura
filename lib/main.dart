@@ -1,6 +1,7 @@
 
 
 import 'package:aura/screens/cartSkinCare.dart';
+import 'package:aura/screens/productHomePage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ Future<void> main() async {
   runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
-        home:Cart() ,
+        home:ProductHomePage() ,
       ));
 
 }

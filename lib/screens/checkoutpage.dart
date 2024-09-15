@@ -42,10 +42,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please select 'Cash On Delivery'")),
       );
-         Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ConfirmPage()),
-      );;
+
     }
 
 
@@ -62,6 +59,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Checkout successful!")),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ConfirmPage()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

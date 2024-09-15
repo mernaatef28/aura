@@ -21,7 +21,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/lxaorigocqovrgsga3yjhqjtswladutljlly9jsfmtefrp6iuxo9nobocsloe8u2-o.jpg"), // Make sure this image is in your assets folder and properly listed in pubspec.yaml
+                image: AssetImage("assets/pictures/20.jpg"), // Make sure this image is in your assets folder and properly listed in pubspec.yaml
                 fit: BoxFit.cover, // Adjust the image to cover the entire screen
                 colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.5), // Adjust opacity here (0.0 - 1.0)
