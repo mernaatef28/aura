@@ -1,3 +1,4 @@
+import 'package:aura/screens/productHomePage.dart';
 import'package:flutter/material.dart';
 import 'package:aura/screens/cartSkinCare.dart';
 
@@ -7,7 +8,7 @@ main(){
  runApp(
      MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:Cart(),
+      home:ProductHomePage(),
      )
  );
 }
