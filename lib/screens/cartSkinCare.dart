@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cartSkinCare/cartLogic.dart';
 import '../bloc/cartSkinCare/cartState.dart';
+import 'checkoutpage.dart';
 
 
 
@@ -254,7 +255,9 @@ class Cart extends StatelessWidget {
                   ),
                   SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> CheckoutPage()));
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Color(0xFF51858C),
