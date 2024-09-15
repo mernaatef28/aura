@@ -36,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       if (email == 'jana.hagar@gmail.com' && password == '123456') {
         _showNotification("Admin login successful!", false);
+        // navigate to admin page
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminPage()));
       } else {
         QuerySnapshot result = await users.where('email', isEqualTo: email).get();
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
           );
           if (user != null) {
             _showNotification("Login successful!", false);
+            // navigate to the main shop page
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
           }
         } else {
