@@ -25,6 +25,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                         width: 150,
                         height: 150,
                         child: Image.asset("assets/pictures/6.png")),
+
                   ),
                 ),
                 SizedBox(
