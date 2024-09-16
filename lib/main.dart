@@ -1,5 +1,7 @@
 
 
+import 'package:aura/screens/adminPanel.dart/addProduct.dart';
+import 'package:aura/screens/adminPanel.dart/adminPanelHome.dart';
 import 'package:aura/screens/cartSkinCare.dart';
 import 'package:aura/screens/productHomePage.dart';
 import 'package:firebase_core/firebase_core.dart';
