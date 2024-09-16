@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:aura/localVariables/local_variables.dart';
+import 'package:aura/localVariables/styles.dart';
 
 class ConfirmPage extends StatefulWidget {
   @override
@@ -13,7 +15,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Order Confirmation"),
-        backgroundColor: Color(0xfff6CAC9), // Match your theme color
+        backgroundColor: babyRose, // Match your theme color
       ),
       body: Stack(
         children: [
@@ -41,7 +43,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                 Icon(
                   Icons.shopping_bag_outlined,
                   size: 100,
-                  color: Color(0xfff6CAC9), // Match your theme color
+                  color:babyRose, // Match your theme color
                 ),
                 SizedBox(height: 20),
                 Text(
@@ -67,7 +69,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                   onPressed: () {
                     // Add action for button press
                   },
-                  color: Color(0xfff6CAC9),
+                  color: babyRose,
                   child: Text(
                     "Go to Home Page",
                     style: TextStyle(fontSize: 18, color: Colors.black87),

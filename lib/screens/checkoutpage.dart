@@ -1,7 +1,10 @@
 
 import 'package:aura/screens//confirmedPage.dart';
+import 'package:aura/screens/cartSkinCare.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:aura/localVariables/local_variables.dart';
+import 'package:aura/localVariables/styles.dart';
 
 class CheckoutPage extends StatefulWidget {
   @override
@@ -45,9 +48,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     }
 
-
-
-
     try {
       await users.add({
         'firstName': firstNameController.text,
@@ -78,12 +78,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
         title: Text(
           'Shipping Address',
           style: TextStyle(
-            color: Color(0xff51858C),
+            color:firozi,
             fontSize: 25,
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: Icon(Icons.arrow_back_ios_new_outlined),
+        leading: IconButton(onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Cart()),
+          );
+
+        }, icon: Icon(Icons.arrow_back_ios_new_outlined)),
       ),
       body: Container(
         margin: const EdgeInsets.all(16.0),
@@ -277,7 +283,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   padding: const EdgeInsets.only(top: 16.0),
                   child: MaterialButton(
                     onPressed: _submitCheckout,
-                    color: Color(0xfff6CAC9),
+                    color: babyRose,
                     child: Text(
                       "Checkout",
                       style: TextStyle(fontSize: 20, color: Colors.black),
