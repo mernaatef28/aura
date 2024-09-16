@@ -7,3 +7,5 @@ TextStyle auraFontbold20 =
     TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
 TextStyle auraFontboldgray15 =
 TextStyle(fontWeight: FontWeight.bold, fontSize: 15 , color: babyGray);
+TextStyle auraFontFayrozi50 =
+TextStyle(color: firozi, fontSize: 50, fontWeight: FontWeight.bold);
