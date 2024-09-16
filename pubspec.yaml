@@ -37,6 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_bloc: ^8.1.6
   bloc: ^8.1.4
+  cupertino_icons: ^1.0.6
+  firebase_core: ^3.4.0
+  cloud_firestore: ^5.4.0
+  firebase_auth: ^5.2.0
+  firebase_messaging: ^15.1.0
+  firebase_storage: ^12.2.0
 
   firebase_core: ^3.4.1
   cloud_firestore: ^5.4.1
@@ -70,8 +76,14 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/pictures/
-  #   - images/a_dot_ham.jpeg
+
+  - images/a_dot_burr.jpeg
+  - images/a_dot_ham.jpeg
+  - assets/login2.png
+  - assets/signin.png
+  - assets/pictures/
+  - images/a_dot_ham.jpeg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
