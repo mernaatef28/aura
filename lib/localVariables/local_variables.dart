@@ -134,3 +134,38 @@ List<Product> products = [
   ),
   // Add more products as needed
 ];
+List<Product> productLists2 = [
+  Product(
+  imageUrl: 'assets/pictures/17.png',
+  categoryName: 'faceCare',
+  productName: 'cleanser',
+  price: 79.99,
+  shortDescription: 'forallskintype',
+  rating: 4.0,
+  discountPercentage: 5,
+  isAvailable: true,
+  ),
+  Product(
+    imageUrl: 'assets/pictures/14.png',
+    categoryName: 'faceCare',
+    productName: 'cleanser',
+    price: 79.99,
+    shortDescription: 'forallskintype',
+    rating: 4.0,
+    discountPercentage: 5,
+    isAvailable: true,
+  ),
+  Product(
+    imageUrl: 'assets/pictures/14.png',
+    categoryName: 'faceCare',
+    productName: 'cleanser',
+    price: 79.99,
+    shortDescription: 'forallskintype',
+    rating: 4.0,
+    discountPercentage: 5,
+    isAvailable: true,
+  ),
+];
+
+
+

@@ -140,7 +140,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
                 ) ,
             GridView.builder(
               shrinkWrap: true, // Allows GridView to take the minimum space
-              physics: NeverScrollableScrollPhysics(), // Disables GridView's scrolling
+              physics: ScrollPhysics(), // Disables GridView's scrolling
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 8,
@@ -148,24 +148,26 @@ class _ProductHomePageState extends State<ProductHomePage> {
               ),
               itemCount: products.length,
               itemBuilder: (context, index) {
-                return ProductCard(
-                  imageUrl: products[index].imageUrl,
-                  categoryName: products[index].categoryName,
-                  productName: products[index].productName,
-                  price: products[index].price,
-                  shortDescription: products[index].shortDescription,
-                  rating: products[index].rating,
-                  discountPercentage: products[index].discountPercentage,
-                  isAvailable: products[index].isAvailable,
-                  cardColor: Colors.white,
-                  textColor: Colors.black,
-                  borderRadius: 8.0,
-                  onTap: () {
-                    // Handle product tap
-                  },
-                  onFavoritePressed: () {
-                    // Handle favorite button pressed
-                  },
+                return SingleChildScrollView(
+                  child: ProductCard(
+                    imageUrl: products[index].imageUrl,
+                    categoryName: products[index].categoryName,
+                    productName: products[index].productName,
+                    price: products[index].price,
+                    shortDescription: products[index].shortDescription,
+                    rating: products[index].rating,
+                    discountPercentage: products[index].discountPercentage,
+                    isAvailable: products[index].isAvailable,
+                    cardColor: Colors.white,
+                    textColor: Colors.black,
+                    borderRadius: 8.0,
+                    onTap: () {
+                      // Handle product tap
+                    },
+                    onFavoritePressed: () {
+                      // Handle favorite button pressed
+                    },
+                  ),
                 );
               },
             )
