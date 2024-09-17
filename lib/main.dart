@@ -1,14 +1,17 @@
 
 
+import 'package:aura/LoginPage.dart';
+import 'package:aura/screens/CategoryDisplay.dart';
 import 'package:aura/screens/adminPanel.dart/addProduct.dart';
 import 'package:aura/screens/adminPanel.dart/adminPanelHome.dart';
-import 'package:aura/screens/cartSkinCare.dart';
+import 'package:aura/screens/cart.dart';
 import 'package:aura/screens/productHomePage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/checkoutpage.dart';
 import 'firebase_options.dart';
+import 'screens/productPage.dart';
 //fireaura-90d09
 Future<void> main() async {
 
@@ -20,7 +23,11 @@ Future<void> main() async {
   runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
-        home:ProductHomePage() ,
+        home : LoginPage(),
+        //ProductHomePage(),
+
+        //:Categorydisplay(categoryName: "fairozi collection ") ,
+        //produactDetailspage(imageUrl: Image.asset('assets/pictures/14.png'), productName: 'Gentle Purifying Cleanser', categoryName: 'FaceCare', price: 40.4 , ) ,
       ));
 
 }

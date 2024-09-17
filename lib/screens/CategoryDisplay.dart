@@ -1,28 +1,14 @@
-import 'package:aura/localVariables/classes/product.dart';
-import 'package:aura/widgets/recommendedProducts.dart';
+import 'package:aura/localVariables/styles.dart';
+import 'package:aura/widgets/productListDisplay.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_product_card/flutter_product_card.dart';
+
 import '../localVariables/local_variables.dart';
 import 'cart.dart';
-import 'package:aura/localVariables/styles.dart';
-import 'package:aura/localVariables/local_variables.dart';
 
-class produactDetailspage extends StatelessWidget {
-  late Image imageUrl;
+class Categorydisplay extends StatelessWidget {
+  final String categoryName;
 
-  late String categoryName, productName;
-
-  late double price;
-
-  late String productDetails;
-
-  produactDetailspage(
-      {required this.imageUrl,
-      required this.productName,
-      required this.categoryName,
-      required this.price,
-      this.productDetails =
-          "Our Gentle Purifying Cleanser is designed to deeply cleanse your skin while maintaining its natural balance. Formulated with nourishing ingredients, this cleanser effectively removes makeup, dirt, and excess oil, leaving your skin feeling fresh, clean, and revitalized."});
+  Categorydisplay({required this.categoryName});
 
   @override
   Widget build(BuildContext context) {
@@ -91,41 +77,21 @@ class produactDetailspage extends StatelessWidget {
                 },
               )
             ]),
-        body: ListView(children: [
-          Container(width: 300, height: 300, child: imageUrl),
-          Container(
-            padding: EdgeInsets.all(15),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    productName,
-                    style: auraFontFayrozi30,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        categoryName,
-                        style: aurasmallgrey20,
-                      ),
-                      Text(
-                        "${price.toString()}\$",
-                        style: auraFontbold20,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      productDetails,
-                      style: auraFont20,
-                    ),
-                  ),
-                  recommendedProducts(context),
-                ]),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  categoryName,
+                  style: auraFontFayrozi40,
+                ),
+              ),
+              Productlistdisplay(),
+            ],
           ),
-        ]));
+        ));
   }
 }

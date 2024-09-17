@@ -76,10 +76,7 @@ class _CartState extends State<Cart> {
                 ),
               ),
               centerTitle: true,
-              leading: Icon(
-                Icons.arrow_back,
-                color: Color(0xFF51858C),
-              ),
+
             ),
             body: SingleChildScrollView(
               child: Padding(
@@ -103,7 +100,7 @@ class _CartState extends State<Cart> {
                                 height: 80.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage(products[i].imageUrl),
+                                    image: NetworkImage(products[i].imageUrl),
                                   ),
                                 ),
                               ),

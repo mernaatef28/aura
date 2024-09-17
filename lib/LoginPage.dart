@@ -1,9 +1,9 @@
- /*  import 'package:flutter/material.dart';
-import 'package:finalproj/signupPage.dart';
+    import 'package:aura/screens/adminPanel.dart/adminPanelHome.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'HomePage.dart';
-import 'admin.dart';
+import 'package:aura/screens/productHomePage.dart';
+import 'package:aura/signupPage.dart';
 import 'colors.dart';
 import 'notification.dart';
 
@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       if (email == 'jana.hagar@gmail.com' && password == '123456') {
         _showNotification("Admin login successful!", false);
         // navigate to admin page
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminPanel()));
       } else {
         QuerySnapshot result = await users.where('email', isEqualTo: email).get();
         if (result.docs.isNotEmpty) {
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
           if (user != null) {
             _showNotification("Login successful!", false);
             // navigate to the main shop page
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProductHomePage()));
           }
         } else {
           _showNotification("Email does not exist!", true);
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Logo
-              Image.asset('assets/login2.png', height: 100),
+              Image.asset('assets/pictures/9.png', height: 250),
               SizedBox(height: 20),
 
               // Welcome Text
@@ -201,4 +201,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-*/
