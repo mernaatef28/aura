@@ -1,8 +1,6 @@
 import 'package:aura/screens/productPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product_card/flutter_product_card.dart';
-import 'package:aura/screens/productPage.dart';
-
 import '../localVariables/local_variables.dart';
 
 Widget recommendedProducts(BuildContext context) => SingleChildScrollView(
