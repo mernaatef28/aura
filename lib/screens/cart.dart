@@ -17,7 +17,7 @@ class _CartState extends State<Cart> {
   final CollectionReference cartCollection = FirebaseFirestore.instance.collection('cart');
   final CollectionReference orderCollection = FirebaseFirestore.instance.collection('orders');
 
-  List<Product> cartProducts = []; // List to store fetched products from 'cart'
+  List<Map<String, dynamic>> cartProducts = []; // List to store products with their document IDs
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _CartState extends State<Cart> {
   Future<void> fetchCartProducts() async {
     try {
       QuerySnapshot cartSnapshot = await cartCollection.get();
-      List<Product> fetchedProducts = [];
+      List<Map<String, dynamic>> fetchedProducts = [];
 
       for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
         Product product = Product(
@@ -42,7 +42,12 @@ class _CartState extends State<Cart> {
           discountPercentage: doc['discountPercentage'],
           isAvailable: doc['isAvailable'],
         );
-        fetchedProducts.add(product);
+
+        fetchedProducts.add({
+          'product': product,
+          'documentId': doc.id, // Store the document ID along with the product
+          'quantity': 1 , // Default to 1 if quantity is not set
+        });
       }
 
       setState(() {
@@ -55,11 +60,36 @@ class _CartState extends State<Cart> {
     }
   }
 
+  // Method to delete product from Firestore cart collection
+  Future<void> deleteProductFromCart(String documentId) async {
+    try {
+      await cartCollection.doc(documentId).delete();
+      print("Product deleted from cart");
+      fetchCartProducts(); // Refresh cart after deletion
+    } catch (e) {
+      print("Error deleting product from cart: $e");
+    }
+  }
+
+  // Method to update quantity in Firestore cart collection
+  Future<void> updateQuantity(String documentId, int newQuantity) async {
+    try {
+      await cartCollection.doc(documentId).update({'quantity': newQuantity});
+      print("Product quantity updated");
+      fetchCartProducts(); // Refresh cart after updating quantity
+    } catch (e) {
+      print("Error updating product quantity: $e");
+    }
+  }
+
   // Handle Checkout: Transfer products to 'orders' and clear 'cart'
   Future<void> handleCheckout() async {
     try {
       // Transfer each product from 'cart' to 'orders'
-      for (Product product in cartProducts) {
+      for (Map<String, dynamic> item in cartProducts) {
+        Product product = item['product'];
+        int quantity = item['quantity'] ?? 1; // Default to 1 if quantity is not set
+
         await orderCollection.add({
           'productName': product.productName,
           'price': product.price,
@@ -69,6 +99,7 @@ class _CartState extends State<Cart> {
           'rating': product.rating,
           'discountPercentage': product.discountPercentage,
           'isAvailable': product.isAvailable,
+          'quantity': quantity, // Send quantity to orders collection
         });
       }
 
@@ -95,6 +126,14 @@ class _CartState extends State<Cart> {
         listener: (context, state) {},
         builder: (context, state) {
           Cartlogic obj = BlocProvider.of(context);
+
+          // Calculate the total dynamically
+          double total = 0;
+          for (var item in cartProducts) {
+            double productPrice = item['product'].price;
+            int quantity = item['quantity'] ?? 1; // Default to 1 if quantity is not set
+            total += productPrice * quantity;
+          }
 
           return Scaffold(
             appBar: AppBar(
@@ -131,7 +170,7 @@ class _CartState extends State<Cart> {
                                 height: 80.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(cartProducts[i].imageUrl),
+                                    image: NetworkImage(cartProducts[i]['product'].imageUrl),
                                   ),
                                 ),
                               ),
@@ -141,14 +180,42 @@ class _CartState extends State<Cart> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      cartProducts[i].productName,
+                                      cartProducts[i]['product'].productName,
                                       style: aurabold25,
                                     ),
                                     Text(
-                                      cartProducts[i].price.toString(),
+                                      '\$${cartProducts[i]['product'].price}',
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Qty: ${cartProducts[i]['quantity']}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    MaterialButton(
+                                      onPressed: () async {
+                                        String documentId = cartProducts[i]['documentId'];
+                                        await deleteProductFromCart(documentId);
+                                      },
+                                      minWidth: 2,
+                                      height: 10,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      color: babyRose,
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.delete_outline, size: 30),
+                                          ),
+                                          Text('Delete', style: auraFontbold20),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -168,7 +235,7 @@ class _CartState extends State<Cart> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Total', style: auraFontbold30),
-                          Text('\$ 480.00', // Replace with actual calculation
+                          Text('\$${total.toStringAsFixed(2)}', // Use actual total calculation
                               style: TextStyle(fontSize: 30)),
                         ],
                       ),
@@ -177,7 +244,7 @@ class _CartState extends State<Cart> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Delivery charge', style: TextStyle(fontSize: 20)),
-                        Text('\$ 40.00', // Replace with actual value
+                        Text('\$40.00', // Use actual delivery charge value
                             style: TextStyle(fontSize: 20)),
                       ],
                     ),
@@ -188,7 +255,7 @@ class _CartState extends State<Cart> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('SubTotal', style: auraFontbold30),
-                          Text('\$ 520.00', // Replace with actual calculation
+                          Text('\$${(total + 40).toStringAsFixed(2)}', // Subtotal calculation including delivery charge
                               style: TextStyle(fontSize: 30)),
                         ],
                       ),
