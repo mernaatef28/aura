@@ -7,31 +7,46 @@ import 'package:aura/widgets/addProductCard.dart';
 import '../../bloc/cartSkinCare/cartLogic.dart';
 import '../../bloc/cartSkinCare/cartState.dart';
 import '../../widgets/textFormFeild_Widget.dart';
-// Import the firebase_core and cloud_firestore plugin
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class addProduct extends StatelessWidget {
+class AddProduct extends StatelessWidget {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController categoryController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
+  final TextEditingController shortDescriptionController = TextEditingController();
+  final TextEditingController detailsDescriptionController = TextEditingController();
+  final TextEditingController launchingLineController = TextEditingController(); // New Controller
+
   @override
   Widget build(BuildContext context) {
-    // Create a CollectionReference called users that references the firestore collection
     CollectionReference products = FirebaseFirestore.instance.collection('products');
 
-    Future<void> addProduct() {
-      // Call the user's CollectionReference to add a new user
-      return products
-          .add({
-        'ProductName': nameController.text, // John Doe
-        'CategoryName': categoryController.text, // Stokes and Sons
-        'price': priceController.hashCode ,// 42
-        'ImageUrl': imageController.text // 42
-      })
-          .then((value) => print("product Added"))
-          .catchError((error) => print("Failed to add user: $error"));
+    Future<void> addProduct() async {
+      // Validate that fields are not empty
+      if (nameController.text.isNotEmpty &&
+          categoryController.text.isNotEmpty &&
+          priceController.text.isNotEmpty &&
+          imageController.text.isNotEmpty &&
+          shortDescriptionController.text.isNotEmpty &&
+          detailsDescriptionController.text.isNotEmpty &&
+          launchingLineController.text.isNotEmpty) { // Check new field
+        return products
+            .add({
+          'ProductName': nameController.text,
+          'CategoryName': categoryController.text,
+          'price': priceController.text,
+          'ImageUrl': imageController.text,
+          'ProductShortDescription': shortDescriptionController.text,
+          'ProductDetailsDescription': detailsDescriptionController.text,
+          'LaunchingLine': launchingLineController.text, // Add new field
+        })
+            .then((value) => print("Product Added"))
+            .catchError((error) => print("Failed to add product: $error"));
+      } else {
+        print("Please fill in all fields");
+      }
     }
 
     return BlocProvider(
@@ -43,7 +58,7 @@ class addProduct extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                "product add",
+                "Add Product",
                 style: auraFontFayrozi30,
               ),
             ),
@@ -53,7 +68,7 @@ class addProduct extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("product list", style: aurabold28),
+                    Text("Product List", style: aurabold28),
                     for (int i = 0; i < productLists2.length; i++)
                       AddProductCard(
                         addProductCategory: productLists2[i].categoryName,
@@ -62,15 +77,51 @@ class addProduct extends StatelessWidget {
                         addproductName: productLists2[i].productName,
                       ),
 
-                    // add new product to the list
-                    Text("add new ", style: aurabold28),
+                    Text("Add New", style: aurabold28),
 
-                    TextformfeildWidget(Controller: nameController, feildName: 'ProductName', icon: Icon(Icons.drive_file_rename_outline),) ,
-                    TextformfeildWidget(Controller: categoryController, feildName: 'CategoryName', icon: Icon(Icons.account_balance_wallet),) ,
-                    TextformfeildWidget(Controller: priceController, feildName: "price", icon: Icon(Icons.monetization_on),) ,
-                    TextformfeildWidget(Controller: imageController, feildName: "ImageUrl", icon: Icon(Icons.image)) ,
-                    Center(child: btnCal(text: "Add Product", c: firozi, event:  addProduct , textColor: Colors.white)),
-
+                    TextformfeildWidget(
+                      Controller: nameController,
+                      feildName: 'ProductName',
+                      icon: Icon(Icons.drive_file_rename_outline),
+                    ),
+                    TextformfeildWidget(
+                      Controller: categoryController,
+                      feildName: 'CategoryName',
+                      icon: Icon(Icons.account_balance_wallet),
+                    ),
+                    TextformfeildWidget(
+                      Controller: priceController,
+                      feildName: "Price",
+                      icon: Icon(Icons.monetization_on),
+                    ),
+                    TextformfeildWidget(
+                      Controller: imageController,
+                      feildName: "ImageUrl",
+                      icon: Icon(Icons.image),
+                    ),
+                    TextformfeildWidget(
+                      Controller: shortDescriptionController,
+                      feildName: "Short Description",
+                      icon: Icon(Icons.description),
+                    ),
+                    TextformfeildWidget(
+                      Controller: detailsDescriptionController,
+                      feildName: "Details Description",
+                      icon: Icon(Icons.description_outlined),
+                    ),
+                    TextformfeildWidget(
+                      Controller: launchingLineController, // New TextFormField
+                      feildName: "Launching Line",
+                      icon: Icon(Icons.label),
+                    ),
+                    Center(
+                      child: btnCal(
+                        text: "Add Product",
+                        c: firozi,
+                        event: addProduct,
+                        textColor: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
               ),
