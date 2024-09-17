@@ -79,8 +79,8 @@ class _SignupPageState extends State<SignupPage> {
                 children: [
                   // Logo
                   Image.asset(
-                    'assets/signin.png', // Path to the logo image
-                    height: 100,
+                    'assets/pictures/6.png', // Path to the logo image
+                    height: 150,
                   ),
                   SizedBox(height: 20),
                   // Sign Up Text
