@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_product_card/flutter_product_card.dart';
 import '../localVariables/local_variables.dart';
 import '../screens/productPage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 class Productlistdisplay extends StatelessWidget {
@@ -12,8 +11,26 @@ class Productlistdisplay extends StatelessWidget {
 
   Productlistdisplay({required this.launchLine});
 
-  @override
+  // Method to add a product to the cart
+  void addProductToCart(Product product) async {
+    try {
+      await FirebaseFirestore.instance.collection('cart').add({
+        'productName': product.productName,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+        'categoryName': product.categoryName,
+        'shortDescription': product.shortDescription,
+        'rating': product.rating,
+        'discountPercentage': product.discountPercentage,
+        'isAvailable': product.isAvailable,
+      });
+      print("Product added to cart");
+    } catch (e) {
+      print("Error adding product to cart: $e");
+    }
+  }
 
+  @override
   Widget build(BuildContext context) {
     CollectionReference productsCollection = FirebaseFirestore.instance.collection('products');
 
@@ -40,7 +57,7 @@ class Productlistdisplay extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
-            childAspectRatio: 0.55,
+            childAspectRatio: 0.5,
           ),
           itemCount: products.length,
           itemBuilder: (context, index) {
@@ -62,39 +79,66 @@ class Productlistdisplay extends StatelessWidget {
             double rating = parseToDouble(product['rating']);
             double discountPercentage = parseToDouble(product['discount']);
 
-            return ProductCard(
-              imageUrl: product['ImageUrl'],
-              categoryName: product['CategoryName'],
+            Product productObject = Product(
               productName: product['ProductName'],
               price: price,
+              imageUrl: product['ImageUrl'],
+              categoryName: product['CategoryName'],
               shortDescription: product['ProductShortDescription'],
               rating: rating,
               discountPercentage: discountPercentage,
               isAvailable: true,
-              cardColor: Colors.white,
-              textColor: Colors.black,
-              borderRadius: 8.0,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => produactDetailspage(
-                      imageUrl: Image.network(product['ImageUrl']),
-                      productName: product['ProductName'],
-                      categoryName: product['CategoryName'],
-                      price: price,
+            );
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  ProductCard(
+                    imageUrl: product['ImageUrl'],
+                    categoryName: product['CategoryName'],
+                    productName: product['ProductName'],
+                    price: price,
+                    shortDescription: product['ProductShortDescription'],
+                    rating: rating,
+                    discountPercentage: discountPercentage,
+                    isAvailable: true,
+                    cardColor: Colors.white,
+                    textColor: Colors.black,
+                    borderRadius: 8.0,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => produactDetailspage(
+                            imageUrl: Image.network(product['ImageUrl']),
+                            productName: product['ProductName'],
+                            categoryName: product['CategoryName'],
+                            price: price,
+                          ),
+                        ),
+                      );
+                    },
+                    onFavoritePressed: () {
+                      // Handle favorite button pressed
+                    },
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 30,
+                    child: MaterialButton(
+                      onPressed: () {
+                        addProductToCart(productObject); // Call the method to add product to cart
+                      },
+                      child: Icon(Icons.add_shopping_cart_outlined),
+                      color: firozi,
                     ),
                   ),
-                );
-              },
-              onFavoritePressed: () {
-                // Handle favorite button pressed
-              },
+                ],
+              ),
             );
           },
         );
       },
     );
   }
-
 }

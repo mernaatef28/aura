@@ -8,11 +8,11 @@ import 'package:aura/screens/cart.dart';
 import 'package:aura/screens/productHomePage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'widgets/addAllProducts.dart';
+import 'temps/addAllProducts.dart';
 import 'screens/checkoutpage.dart';
 import 'firebase_options.dart';
 import 'screens/productPage.dart';
-import 'widgets/categoryadd.dart';
+import 'temps/categoryadd.dart';
 //fireaura-90d09
 Future<void> main() async {
 
