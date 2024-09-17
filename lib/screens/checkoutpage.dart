@@ -77,11 +77,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       appBar: AppBar(
         title: Text(
           'Shipping Address',
-          style: TextStyle(
-            color:firozi,
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-          ),
+          style: auraFontFayrozi25
         ),
         leading: IconButton(onPressed: (){
           Navigator.push(
@@ -250,12 +246,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Order Summary', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                        Text('Order Summary', style:aurabold25),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('SubTotal', style: TextStyle(fontSize: 25)),
-                            Text('\$ 480.00', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                            Text('\$ 480.00', style: aurabold25),
                           ],
                         ),
                         SizedBox(height: 8),
@@ -270,8 +266,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                            Text('\$ 520.00', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                            Text('Total', style: auraFontbold30),
+                            Text('\$ 520.00', style: aurabold25),
                           ],
                         ),
                       ],

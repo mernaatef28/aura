@@ -15,44 +15,76 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   final CollectionReference cartCollection = FirebaseFirestore.instance.collection('cart');
+  final CollectionReference orderCollection = FirebaseFirestore.instance.collection('orders');
 
-  // Method to add product to Firebase Firestore cart collection
-  Future<void> addProductToCart(Product product) async {
+  List<Product> cartProducts = []; // List to store fetched products from 'cart'
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCartProducts(); // Fetch products when cart page is loaded
+  }
+
+  // Method to fetch products from Firestore 'cart' collection
+  Future<void> fetchCartProducts() async {
     try {
-      await cartCollection.add({
-        'productName': product.productName,
-        'price': product.price,
-        'imageUrl': product.imageUrl,
-        'categoryName': product.categoryName,
-        'shortDescription': product.shortDescription,
-        'rating': product.rating,
-        'discountPercentage': product.discountPercentage,
-        'isAvailable': product.isAvailable,
+      QuerySnapshot cartSnapshot = await cartCollection.get();
+      List<Product> fetchedProducts = [];
+
+      for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
+        Product product = Product(
+          productName: doc['productName'],
+          price: doc['price'],
+          imageUrl: doc['imageUrl'],
+          categoryName: doc['categoryName'],
+          shortDescription: doc['shortDescription'],
+          rating: doc['rating'],
+          discountPercentage: doc['discountPercentage'],
+          isAvailable: doc['isAvailable'],
+        );
+        fetchedProducts.add(product);
+      }
+
+      setState(() {
+        cartProducts = fetchedProducts;
       });
-      print("Product added to cart");
+
+      print("Products fetched from cart collection");
     } catch (e) {
-      print("Error adding product to cart: $e");
+      print("Error fetching products from cart collection: $e");
     }
   }
 
-  // Method to delete product from Firebase Firestore
-  Future<void> deleteProductFromCart(String documentId) async {
-    try {
-      await cartCollection.doc(documentId).delete();
-      print("Product deleted from cart");
-    } catch (e) {
-      print("Error deleting product from cart: $e");
-    }
-  }
-
-  // Handle Checkout: Add all products to Firebase
+  // Handle Checkout: Transfer products to 'orders' and clear 'cart'
   Future<void> handleCheckout() async {
-    for (Product product in products) {
-      await addProductToCart(product);
+    try {
+      // Transfer each product from 'cart' to 'orders'
+      for (Product product in cartProducts) {
+        await orderCollection.add({
+          'productName': product.productName,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+          'categoryName': product.categoryName,
+          'shortDescription': product.shortDescription,
+          'rating': product.rating,
+          'discountPercentage': product.discountPercentage,
+          'isAvailable': product.isAvailable,
+        });
+      }
+
+      // Clear the 'cart' collection
+      QuerySnapshot cartSnapshot = await cartCollection.get();
+      for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
+        await cartCollection.doc(doc.id).delete();
+      }
+
+      print("Products moved to orders and cart cleared");
+
+      // Navigate to CheckoutPage
+      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutPage()));
+    } catch (e) {
+      print("Error during checkout: $e");
     }
-    print("All products added to cart for checkout.");
-    // Navigate to CheckoutPage
-    Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutPage()));
   }
 
   @override
@@ -67,24 +99,23 @@ class _CartState extends State<Cart> {
           return Scaffold(
             appBar: AppBar(
               elevation: 1,
-              title: Text(
-                'Shopping cart',
-                style: TextStyle(
-                  fontSize: 30,
-                  color: firozi,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              title: Text('Shopping cart', style: auraFontFayrozi30),
               centerTitle: true,
-
             ),
-            body: SingleChildScrollView(
+            body: cartProducts.isEmpty
+                ? Center(
+              child: Text(
+                'Your cart is empty',
+                style: aurabold25,
+              ),
+            )
+                : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    for (int i = 0; i < products.length; i++)
+                    for (int i = 0; i < cartProducts.length; i++)
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Container(
@@ -100,7 +131,7 @@ class _CartState extends State<Cart> {
                                 height: 80.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(products[i].imageUrl),
+                                    image: NetworkImage(cartProducts[i].imageUrl),
                                   ),
                                 ),
                               ),
@@ -110,72 +141,14 @@ class _CartState extends State<Cart> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      products[i].productName,
+                                      cartProducts[i].productName,
+                                      style: aurabold25,
+                                    ),
+                                    Text(
+                                      cartProducts[i].price.toString(),
                                       style: TextStyle(
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        products[i].price.toString(),
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            obj.mcart();
-                                          },
-                                          icon: Icon(Icons.remove),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                          child: Text(
-                                            '${obj.i}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            obj.pcart();
-                                          },
-                                          icon: Icon(Icons.add),
-                                        ),
-                                      ],
-                                    ),
-
-                                    MaterialButton(
-                                      onPressed: () async {
-                                        // Assuming you have a way to store the document ID
-                                        String documentId = 'some-document-id'; // Replace with actual ID
-                                        await deleteProductFromCart(documentId);
-                                      },
-                                      minWidth: 2,
-                                      height: 10,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      color: babyRose,
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {},
-                                            icon: Icon(Icons.delete_outline, size: 30),
-                                          ),
-                                          Text(
-                                            'Delete',
-                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                   ],
@@ -194,28 +167,18 @@ class _CartState extends State<Cart> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Total',
-                            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '\$ 480.00',
-                            style: TextStyle(fontSize: 30),
-                          ),
+                          Text('Total', style: auraFontbold30),
+                          Text('\$ 480.00', // Replace with actual calculation
+                              style: TextStyle(fontSize: 30)),
                         ],
                       ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Delivery charge',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Text(
-                          '\$ 40.00',
-                          style: TextStyle(fontSize: 20),
-                        ),
+                        Text('Delivery charge', style: TextStyle(fontSize: 20)),
+                        Text('\$ 40.00', // Replace with actual value
+                            style: TextStyle(fontSize: 20)),
                       ],
                     ),
                     Divider(),
@@ -224,14 +187,9 @@ class _CartState extends State<Cart> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'SubTotal',
-                            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '\$ 520.00',
-                            style: TextStyle(fontSize: 30),
-                          ),
+                          Text('SubTotal', style: auraFontbold30),
+                          Text('\$ 520.00', // Replace with actual calculation
+                              style: TextStyle(fontSize: 30)),
                         ],
                       ),
                     ),
@@ -245,10 +203,7 @@ class _CartState extends State<Cart> {
                         backgroundColor: firozi,
                       ),
                       child: Center(
-                        child: Text(
-                          'Checkout',
-                          style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
+                        child: Text('Checkout', style: checkoutStyle),
                       ),
                     ),
                   ],
