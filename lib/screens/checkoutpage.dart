@@ -1,5 +1,4 @@
-
-import 'package:aura/screens//confirmedPage.dart';
+import 'package:aura/screens/confirmedPage.dart';
 import 'package:aura/screens/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,11 +6,16 @@ import 'package:aura/localVariables/local_variables.dart';
 import 'package:aura/localVariables/styles.dart';
 
 class CheckoutPage extends StatefulWidget {
+  final List<Map<String, dynamic>> fetchedProducts;
+
+  CheckoutPage({required this.fetchedProducts});
+
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
+  final CollectionReference orderCollection = FirebaseFirestore.instance.collection('orders');
   CollectionReference users = FirebaseFirestore.instance.collection('checkout');
 
   // Text Controllers
@@ -21,7 +25,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController countryController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>(); //  Key for validation
+  final _formKey = GlobalKey<FormState>(); // Key for validation
   String? _deliveryOption = 'Cash On Delivery';
 
   @override
@@ -45,21 +49,31 @@ class _CheckoutPageState extends State<CheckoutPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please select 'Cash On Delivery'")),
       );
-
+      return; // Exit if delivery option is not selected
     }
 
     try {
-      await users.add({
+      // Create a new order document
+      DocumentReference newOrderDoc = await users.add({
         'firstName': firstNameController.text,
         'lastName': lastNameController.text,
         'address': addressController.text,
         'mobileNumber': mobileNumberController.text,
         'country': countryController.text,
         'deliveryOption': _deliveryOption,
+        // Send products list to orders collection
       });
+
+      // Add products to the new order document
+      await orderCollection.add({
+        'orderId': newOrderDoc.id, // Reference to the order document
+        'products': widget.fetchedProducts, // Send products list
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Checkout successful!")),
       );
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ConfirmPage()),
@@ -77,15 +91,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
       appBar: AppBar(
         title: Text(
           'Shipping Address',
-          style: auraFontFayrozi25
+          style: auraFontFayrozi25,
         ),
-        leading: IconButton(onPressed: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Cart()),
-          );
-
-        }, icon: Icon(Icons.arrow_back_ios_new_outlined)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Cart()),
+            );
+          },
+          icon: Icon(Icons.arrow_back_ios_new_outlined),
+        ),
       ),
       body: Container(
         margin: const EdgeInsets.all(16.0),
@@ -246,12 +262,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Order Summary', style:aurabold25),
+                        Text('Order Summary', style: aurabold25),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('SubTotal', style: TextStyle(fontSize: 25)),
-                            Text('\$ 480.00', style: aurabold25),
+                            Text('\$480.00', style: aurabold25),
                           ],
                         ),
                         SizedBox(height: 8),
@@ -259,7 +275,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Delivery Charge', style: TextStyle(fontSize: 20)),
-                            Text('\$ 40.00', style: TextStyle(fontSize: 20)),
+                            Text('\$40.00', style: TextStyle(fontSize: 20)),
                           ],
                         ),
                         Divider(),
@@ -267,7 +283,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Total', style: auraFontbold30),
-                            Text('\$ 520.00', style: aurabold25),
+                            Text('\$520.00', style: aurabold25),
                           ],
                         ),
                       ],

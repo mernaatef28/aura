@@ -9,15 +9,16 @@ import 'package:aura/localVariables/styles.dart';
 import 'package:aura/localVariables/classes/product.dart';
 
 class Cart extends StatefulWidget {
+  List<Map<String, dynamic>> cartProducts = [];
   @override
   _CartState createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
   final CollectionReference cartCollection = FirebaseFirestore.instance.collection('cart');
-  final CollectionReference orderCollection = FirebaseFirestore.instance.collection('orders');
 
-  List<Map<String, dynamic>> cartProducts = []; // List to store products with their document IDs
+
+   // List to store products with their document IDs
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _CartState extends State<Cart> {
   Future<void> fetchCartProducts() async {
     try {
       QuerySnapshot cartSnapshot = await cartCollection.get();
-      List<Map<String, dynamic>> fetchedProducts = [];
+      List<Map<String, dynamic>> fetchedProductsin = [] ;
 
       for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
         Product product = Product(
@@ -43,7 +44,7 @@ class _CartState extends State<Cart> {
           isAvailable: doc['isAvailable'],
         );
 
-        fetchedProducts.add({
+        fetchedProductsin.add({
           'product': product,
           'documentId': doc.id, // Store the document ID along with the product
           'quantity': 1 , // Default to 1 if quantity is not set
@@ -51,7 +52,8 @@ class _CartState extends State<Cart> {
       }
 
       setState(() {
-        cartProducts = fetchedProducts;
+        this.widget.cartProducts = fetchedProductsin;
+
       });
 
       print("Products fetched from cart collection");
@@ -86,21 +88,11 @@ class _CartState extends State<Cart> {
   Future<void> handleCheckout() async {
     try {
       // Transfer each product from 'cart' to 'orders'
-      for (Map<String, dynamic> item in cartProducts) {
+      for (Map<String, dynamic> item in this.widget.cartProducts) {
         Product product = item['product'];
         int quantity = item['quantity'] ?? 1; // Default to 1 if quantity is not set
 
-        await orderCollection.add({
-          'productName': product.productName,
-          'price': product.price,
-          'imageUrl': product.imageUrl,
-          'categoryName': product.categoryName,
-          'shortDescription': product.shortDescription,
-          'rating': product.rating,
-          'discountPercentage': product.discountPercentage,
-          'isAvailable': product.isAvailable,
-          'quantity': quantity, // Send quantity to orders collection
-        });
+
       }
 
       // Clear the 'cart' collection
@@ -112,7 +104,7 @@ class _CartState extends State<Cart> {
       print("Products moved to orders and cart cleared");
 
       // Navigate to CheckoutPage
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutPage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutPage(fetchedProducts: this.widget.cartProducts,)));
     } catch (e) {
       print("Error during checkout: $e");
     }
@@ -129,7 +121,7 @@ class _CartState extends State<Cart> {
 
           // Calculate the total dynamically
           double total = 0;
-          for (var item in cartProducts) {
+          for (var item in this.widget.cartProducts) {
             double productPrice = item['product'].price;
             int quantity = item['quantity'] ?? 1; // Default to 1 if quantity is not set
             total += productPrice * quantity;
@@ -141,7 +133,7 @@ class _CartState extends State<Cart> {
               title: Text('Shopping cart', style: auraFontFayrozi30),
               centerTitle: true,
             ),
-            body: cartProducts.isEmpty
+            body: this.widget.cartProducts.isEmpty
                 ? Center(
               child: Text(
                 'Your cart is empty',
@@ -154,7 +146,7 @@ class _CartState extends State<Cart> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    for (int i = 0; i < cartProducts.length; i++)
+                    for (int i = 0; i < this.widget.cartProducts.length; i++)
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Container(
@@ -170,7 +162,7 @@ class _CartState extends State<Cart> {
                                 height: 80.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(cartProducts[i]['product'].imageUrl),
+                                    image: NetworkImage(this.widget.cartProducts[i]['product'].imageUrl),
                                   ),
                                 ),
                               ),
@@ -180,18 +172,18 @@ class _CartState extends State<Cart> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      cartProducts[i]['product'].productName,
+                                      this.widget.cartProducts[i]['product'].productName,
                                       style: aurabold25,
                                     ),
                                     Text(
-                                      '\$${cartProducts[i]['product'].price}',
+                                      '\$${this.widget.cartProducts[i]['product'].price}',
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
                                     Text(
-                                      'Qty: ${cartProducts[i]['quantity']}',
+                                      'Qty: ${this.widget.cartProducts[i]['quantity']}',
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
@@ -199,7 +191,7 @@ class _CartState extends State<Cart> {
                                     SizedBox(height: 8),
                                     MaterialButton(
                                       onPressed: () async {
-                                        String documentId = cartProducts[i]['documentId'];
+                                        String documentId = this.widget.cartProducts[i]['documentId'];
                                         await deleteProductFromCart(documentId);
                                       },
                                       minWidth: 2,
