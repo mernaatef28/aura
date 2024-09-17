@@ -1,4 +1,3 @@
-import 'package:aura/localVariables/local_variables.dart';
 import 'package:aura/widgets/btn.dart';
 import 'package:flutter/material.dart';
 import 'package:aura/localVariables/styles.dart';
@@ -6,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aura/widgets/addProductCard.dart';
 import '../../bloc/cartSkinCare/cartLogic.dart';
 import '../../bloc/cartSkinCare/cartState.dart';
+import '../../localVariables/local_variables.dart';
 import '../../widgets/textFormFeild_Widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -24,26 +24,36 @@ class AddProduct extends StatelessWidget {
     CollectionReference products = FirebaseFirestore.instance.collection('products');
 
     Future<void> addProduct() async {
-      // Validate that fields are not empty
       if (nameController.text.isNotEmpty &&
           categoryController.text.isNotEmpty &&
           priceController.text.isNotEmpty &&
           imageController.text.isNotEmpty &&
           shortDescriptionController.text.isNotEmpty &&
           detailsDescriptionController.text.isNotEmpty &&
-          launchingLineController.text.isNotEmpty) { // Check new field
-        return products
-            .add({
-          'ProductName': nameController.text,
-          'CategoryName': categoryController.text,
-          'price': priceController.text,
-          'ImageUrl': imageController.text,
-          'ProductShortDescription': shortDescriptionController.text,
-          'ProductDetailsDescription': detailsDescriptionController.text,
-          'LaunchingLine': launchingLineController.text, // Add new field
-        })
-            .then((value) => print("Product Added"))
-            .catchError((error) => print("Failed to add product: $error"));
+          launchingLineController.text.isNotEmpty) {
+        try {
+          await products.add({
+            'ProductName': nameController.text,
+            'CategoryName': categoryController.text,
+            'price': priceController.text,
+            'ImageUrl': imageController.text,
+            'ProductShortDescription': shortDescriptionController.text,
+            'ProductDetailsDescription': detailsDescriptionController.text,
+            'LaunchingLine': launchingLineController.text,
+          });
+          print("Product Added");
+
+          // Clear the text fields
+          nameController.clear();
+          categoryController.clear();
+          priceController.clear();
+          imageController.clear();
+          shortDescriptionController.clear();
+          detailsDescriptionController.clear();
+          launchingLineController.clear();
+        } catch (error) {
+          print("Failed to add product: $error");
+        }
       } else {
         print("Please fill in all fields");
       }
@@ -69,13 +79,47 @@ class AddProduct extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text("Product List", style: aurabold28),
-                    for (int i = 0; i < productLists2.length; i++)
-                      AddProductCard(
-                        addProductCategory: productLists2[i].categoryName,
-                        addProductImageAssets: productLists2[i].imageUrl,
-                        editPagePush: () {},
-                        addproductName: productLists2[i].productName,
-                      ),
+
+                    // Fetching and displaying products from Firebase
+                    StreamBuilder<QuerySnapshot>(
+                      stream: products.snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("Something went wrong");
+                        }
+
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return CircularProgressIndicator();
+                        }
+
+                        return Container(
+                          height: 600.0, // Set a fixed height for the ListView
+                          child: ListView(
+                            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                              Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                              String docId = document.id; // Get the document ID
+
+                              return AddProductCard(
+                                addProductCategory: data['CategoryName'],
+                                addProductImageAssets: data['ImageUrl'],
+                                addproductName: data['ProductName'],
+                                editPagePush: () {
+                                  // Define the edit action if needed
+                                },
+                                deleteProduct: (String documentId) async {
+                                  await products.doc(documentId).delete().then((_) {
+                                    print("Product deleted");
+                                  }).catchError((error) {
+                                    print("Failed to delete product: $error");
+                                  });
+                                },
+                                documentId: docId, // Pass the document ID
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
+                    ),
 
                     Text("Add New", style: aurabold28),
 
@@ -110,7 +154,7 @@ class AddProduct extends StatelessWidget {
                       icon: Icon(Icons.description_outlined),
                     ),
                     TextformfeildWidget(
-                      Controller: launchingLineController, // New TextFormField
+                      Controller: launchingLineController,
                       feildName: "Launching Line",
                       icon: Icon(Icons.label),
                     ),
