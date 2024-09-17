@@ -12,6 +12,7 @@ import 'widgets/addAllProducts.dart';
 import 'screens/checkoutpage.dart';
 import 'firebase_options.dart';
 import 'screens/productPage.dart';
+import 'widgets/categoryadd.dart';
 //fireaura-90d09
 Future<void> main() async {
 
@@ -24,11 +25,11 @@ Future<void> main() async {
       MaterialApp(
         debugShowCheckedModeBanner: false,
         home : //LoginPage(),
-        //ProductHomePage(),
-
+        ProductHomePage(),
+        //MyApp() ,
         //:Categorydisplay(categoryName: "fairozi collection ") ,
        // produactDetailspage(imageUrl: Image.network("https://github.com/mernaatef28/aura/blob/main/assets/pictures/15.png?raw=true"), productName: 'Gentle Purifying Cleanser', categoryName: 'FaceCare', price: 40.4 , ) ,
-        AddProduct(),
+        //AddProduct(),
       ));
 
 }
