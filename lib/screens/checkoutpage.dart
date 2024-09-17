@@ -1,6 +1,6 @@
 
 import 'package:aura/screens//confirmedPage.dart';
-import 'package:aura/screens/cartSkinCare.dart';
+import 'package:aura/screens/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:aura/localVariables/local_variables.dart';

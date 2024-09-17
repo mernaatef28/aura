@@ -131,6 +131,24 @@ List<Product> products = [
     rating: 4.0,
     discountPercentage: 5,
     isAvailable: true,
+  ),Product(
+    imageUrl: 'https://i.pinimg.com/564x/51/c0/52/51c052a217fb0be5c34c1b245cb7174c.jpg',
+    categoryName: 'Fashion',
+    productName: 'Designer Shirt',
+    price: 79.99,
+    shortDescription: 'Stylish and comfortable',
+    rating: 4.0,
+    discountPercentage: 5,
+    isAvailable: true,
+  ),Product(
+    imageUrl: 'https://i.pinimg.com/564x/51/c0/52/51c052a217fb0be5c34c1b245cb7174c.jpg',
+    categoryName: 'Fashion',
+    productName: 'Designer Shirt',
+    price: 79.99,
+    shortDescription: 'Stylish and comfortable',
+    rating: 4.0,
+    discountPercentage: 5,
+    isAvailable: true,
   ),
   // Add more products as needed
 ];
