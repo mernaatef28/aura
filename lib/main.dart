@@ -26,7 +26,6 @@ Future<void> main() async {
         debugShowCheckedModeBanner: false,
         home : //LoginPage(),
         ProductHomePage(),
-        //MyApp() ,
         //:Categorydisplay(categoryName: "fairozi collection ") ,
        // produactDetailspage(imageUrl: Image.network("https://github.com/mernaatef28/aura/blob/main/assets/pictures/15.png?raw=true"), productName: 'Gentle Purifying Cleanser', categoryName: 'FaceCare', price: 40.4 , ) ,
         //AddProduct(),
