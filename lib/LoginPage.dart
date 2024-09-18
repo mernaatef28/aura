@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:finalproj/signupPage.dart';
+
 
 import 'package:aura/screens/adminPanel.dart/adminPanelHome.dart';
 
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 50), // Add a top space for better alignment
 
                   // Logo
-                  Image.asset('assets/login2.png', height: 100),
+                  Image.asset('assets/pictures/9.png', height: 200),
                   SizedBox(height: 20),
 
                   // Welcome Text

@@ -1,6 +1,6 @@
+import 'package:aura/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:finalproj/colors.dart';
 
 class EditProductPage extends StatefulWidget {
   final String? productName; // Optional product name
