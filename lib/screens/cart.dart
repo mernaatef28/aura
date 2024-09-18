@@ -1,12 +1,17 @@
+import 'package:aura/localVariables/styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+
 import '../bloc/cartSkinCare/cartLogic.dart';
 import '../bloc/cartSkinCare/cartState.dart';
-import 'checkoutpage.dart';
-import 'package:aura/localVariables/local_variables.dart';
-import 'package:aura/localVariables/styles.dart';
-import 'package:aura/localVariables/classes/product.dart';
+import '../localVariables/classes/product.dart';
+import '../localVariables/local_variables.dart';
+
+import 'CheckoutPage.dart';
+
+
 
 class Cart extends StatefulWidget {
   @override
@@ -14,6 +19,7 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
+
   final CollectionReference cartCollection = FirebaseFirestore.instance.collection('cart');
   final CollectionReference orderCollection = FirebaseFirestore.instance.collection('orders');
 
@@ -27,12 +33,12 @@ class _CartState extends State<Cart> {
   }
 
   // Method to fetch products from Firestore 'cart' collection
+
   Future<void> fetchCartProducts() async {
     try {
       QuerySnapshot cartSnapshot = await cartCollection.get();
       List<Map<String, dynamic>> fetchedProducts = [];
       double calculatedTotal = 0.0; // Temporary total amount
-
       for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
         Product product = Product(
           productName: doc['productName'],
@@ -61,8 +67,8 @@ class _CartState extends State<Cart> {
       print("Error fetching products from cart collection: $e");
     }
   }
-
   // Method to delete product from Firebase Firestore
+
   Future<void> deleteProductFromCart(String documentId) async {
     try {
       await cartCollection.doc(documentId).delete();
@@ -76,6 +82,7 @@ class _CartState extends State<Cart> {
   }
 
   // Handle Checkout: Transfer products to 'orders' and clear 'cart'
+
   Future<void> handleCheckout() async {
     try {
       // Collect cart data

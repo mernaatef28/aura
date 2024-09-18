@@ -29,7 +29,7 @@ Widget recommendedProducts(BuildContext context) => SingleChildScrollView(
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => produactDetailspage(imageUrl: Image.asset('assets/pictures/14.png'), productName: 'Gentle Purifying Cleanser', categoryName: 'FaceCare', price: 40.4 , ) ,
+                    builder: (context) => produactDetailspage(imageUrl:Image.network( products[index].imageUrl), productName:  products[index].productName, categoryName: products[index].categoryName, price: products[index].price , ) ,
                   ),
                 );
               },

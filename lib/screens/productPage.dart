@@ -1,5 +1,6 @@
 import 'package:aura/localVariables/classes/product.dart';
 import 'package:aura/widgets/recommendedProducts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_product_card/flutter_product_card.dart';
 import '../localVariables/local_variables.dart';
@@ -15,6 +16,44 @@ class produactDetailspage extends StatelessWidget {
   late double price;
 
   late String productDetails;
+
+  void addProductToCart(String productName) async {
+    try {
+      print("Searching for product: $productName");
+
+      // Fetch product details from Firebase using the productName
+      var productSnapshot = await FirebaseFirestore.instance
+          .collection('products')
+          .where('productName', isEqualTo: "SoftMist Toner")
+          .get();
+
+      if (productSnapshot.docs.isNotEmpty) {
+        var productData = productSnapshot.docs.first.data();
+        print("Product data: $productData");
+
+        // Add the product to the 'cart' collection
+        await FirebaseFirestore.instance.collection('cart').add({
+          'productName': productData['productName'],
+          'price': productData['price'],
+          'imageUrl': productData['imageUrl'],
+          'categoryName': productData['categoryName'],
+          'shortDescription': productData['shortDescription'],
+          'rating': productData['rating'],
+          'discountPercentage': productData['discountPercentage'],
+          'isAvailable': productData['isAvailable'],
+        });
+
+        print("Product added to cart");
+      } else {
+        print("Product not found in Firebase");
+      }
+    } catch (e) {
+      print("Error adding product to cart: $e");
+    }
+  }
+
+
+
 
   produactDetailspage(
       {required this.imageUrl,
@@ -116,6 +155,18 @@ class produactDetailspage extends StatelessWidget {
                       ),
                     ],
                   ),
+                  Container(
+                    width: double.infinity,
+                    height: 30,
+                    child: MaterialButton(
+                      onPressed: () {
+                        addProductToCart(productName); // Call the method with product name
+                      },
+                      child: Icon(Icons.add_shopping_cart_outlined),
+                      color: firozi,
+                    ),
+                  ),
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(

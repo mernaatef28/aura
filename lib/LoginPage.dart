@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 
-import 'package:aura/screens/adminPanel.dart/adminPanelHome.dart';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +10,7 @@ import 'package:aura/screens/productHomePage.dart';
 import 'package:aura/signupPage.dart';
 import 'colors.dart';
 import 'notification.dart';
+import 'screens/adminPanel/adminPanelHome.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -39,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      if (email == 'jana.hagar@gmail.com' && password == '123456') {
+      if (email == 'admin@gmail.com' && password == '123456') {
         _showNotification("Admin login successful!", false);
 
         // navigate to admin page

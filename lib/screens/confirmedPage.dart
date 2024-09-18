@@ -1,3 +1,4 @@
+import 'package:aura/screens/productHomePage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:aura/localVariables/local_variables.dart';
@@ -67,7 +68,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                 SizedBox(height: 30),
                 MaterialButton(
                   onPressed: () {
-                    // Add action for button press
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProductHomePage()));
                   },
                   color: babyRose,
                   child: Text(

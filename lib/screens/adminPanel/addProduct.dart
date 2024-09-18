@@ -1,3 +1,5 @@
+
+import 'package:aura/screens/adminPanel/updateProduct.dart';
 import 'package:aura/widgets/btn.dart';
 import 'package:flutter/material.dart';
 import 'package:aura/localVariables/styles.dart';
@@ -9,6 +11,8 @@ import '../../localVariables/local_variables.dart';
 import '../../widgets/textFormFeild_Widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 
 class AddProduct extends StatelessWidget {
   final TextEditingController priceController = TextEditingController();
@@ -64,7 +68,6 @@ class AddProduct extends StatelessWidget {
       child: BlocConsumer<Cartlogic, Cartstate>(
         listener: (context, state) {},
         builder: (context, state) {
-          Cartlogic obj = BlocProvider.of(context);
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -96,16 +99,28 @@ class AddProduct extends StatelessWidget {
                           height: 600.0, // Set a fixed height for the ListView
                           child: ListView(
                             children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                              Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                              Map<String, dynamic>? data = document.data() as Map<String, dynamic>?; // Handle null values
+                              if (data == null) {
+                                return ListTile(
+                                  title: Text("Error: Data is null"),
+                                );
+                              }
+
                               String docId = document.id; // Get the document ID
 
                               return AddProductCard(
-                                addProductCategory: data['CategoryName'],
-                                addProductImageAssets: data['ImageUrl'],
-                                addproductName: data['ProductName'],
+                                addProductCategory: data['CategoryName'] ?? 'Unknown Category', // Default value
+                                addProductImageAssets: data['ImageUrl'] ?? 'No Image URL',      // Default value
+                                addproductName: data['ProductName'] ?? 'Unnamed Product',       // Default value
                                 editPagePush: () {
-                                  // Define the edit action if needed
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditProductPage(productName: data['ProductName'] ?? 'Unnamed Product'), // Pass product name
+                                    ),
+                                  );
                                 },
+
                                 deleteProduct: (String documentId) async {
                                   await products.doc(documentId).delete().then((_) {
                                     print("Product deleted");

@@ -43,8 +43,6 @@ dependencies:
   firebase_auth: ^5.2.0
   firebase_messaging: ^15.1.0
   firebase_storage: ^12.2.0
-
-
   carousel_slider: ^5.0.0
   flutter_product_card: ^0.0.6
 

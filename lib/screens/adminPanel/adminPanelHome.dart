@@ -1,9 +1,9 @@
-import 'package:aura/screens/adminPanel.dart/addProduct.dart';
+import 'addProduct.dart';
 import 'package:aura/widgets/btn.dart';
 import 'package:flutter/material.dart';
 import 'package:aura/localVariables/local_variables.dart';
 import 'package:aura/localVariables/styles.dart';
-import 'package:aura/screens/adminPanel.dart/updateProduct.dart';
+import 'updateProduct.dart';
 
 class AdminPanel extends StatelessWidget {
   @override
@@ -48,38 +48,7 @@ class AdminPanel extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigate to the CategoryDisplay page when a category is tapped
-                        print("Navigating to AddProduct page");
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddProduct(),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: firozi,
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(80.0),
-                        ),
-                        elevation: 5,
-                      ),
-                      child: Text(
-                        'Update',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 30),
                   Center(
                     child: ElevatedButton(
@@ -89,7 +58,7 @@ class AdminPanel extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  EditProductPage()), // Make sure this is correct
+                                 AddProduct() ), // Make sure this is correct
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -102,7 +71,7 @@ class AdminPanel extends StatelessWidget {
                         elevation: 5,
                       ),
                       child: Text(
-                        '   Add   ',
+                        '   VIEW PRODUCTS   ',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 25,
