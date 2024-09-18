@@ -17,7 +17,8 @@ class _CartState extends State<Cart> {
   final CollectionReference cartCollection = FirebaseFirestore.instance.collection('cart');
   final CollectionReference orderCollection = FirebaseFirestore.instance.collection('orders');
 
-  List<Product> cartProducts = []; // List to store fetched products from 'cart'
+  List<Map<String, dynamic>> cartProducts = []; // List to store fetched products with their document IDs
+  double totalAmount = 0.0; // Variable to store the total price
 
   @override
   void initState() {
@@ -29,7 +30,8 @@ class _CartState extends State<Cart> {
   Future<void> fetchCartProducts() async {
     try {
       QuerySnapshot cartSnapshot = await cartCollection.get();
-      List<Product> fetchedProducts = [];
+      List<Map<String, dynamic>> fetchedProducts = [];
+      double calculatedTotal = 0.0; // Temporary total amount
 
       for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
         Product product = Product(
@@ -42,11 +44,16 @@ class _CartState extends State<Cart> {
           discountPercentage: doc['discountPercentage'],
           isAvailable: doc['isAvailable'],
         );
-        fetchedProducts.add(product);
+        fetchedProducts.add({
+          'product': product,
+          'documentId': doc.id, // Storing document ID for deletion
+        });
+        calculatedTotal += product.price; // Add product price to total
       }
 
       setState(() {
         cartProducts = fetchedProducts;
+        totalAmount = calculatedTotal; // Update total amount
       });
 
       print("Products fetched from cart collection");
@@ -55,12 +62,27 @@ class _CartState extends State<Cart> {
     }
   }
 
+  // Method to delete product from Firebase Firestore
+  Future<void> deleteProductFromCart(String documentId) async {
+    try {
+      await cartCollection.doc(documentId).delete();
+      print("Product deleted from cart");
+
+      // Refetch the cart products to update the UI
+      fetchCartProducts();
+    } catch (e) {
+      print("Error deleting product from cart: $e");
+    }
+  }
+
   // Handle Checkout: Transfer products to 'orders' and clear 'cart'
   Future<void> handleCheckout() async {
     try {
-      // Transfer each product from 'cart' to 'orders'
-      for (Product product in cartProducts) {
-        await orderCollection.add({
+      // Collect cart data
+      List<Map<String, dynamic>> cartData = [];
+      for (var item in cartProducts) {
+        Product product = item['product'];
+        cartData.add({
           'productName': product.productName,
           'price': product.price,
           'imageUrl': product.imageUrl,
@@ -72,16 +94,21 @@ class _CartState extends State<Cart> {
         });
       }
 
-      // Clear the 'cart' collection
+      // Navigate to CheckoutPage with cart data
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CheckoutPage(cartData: cartData, total:this.totalAmount,),
+        ),
+      );
+
+      // Clear the 'cart' collection after navigation
       QuerySnapshot cartSnapshot = await cartCollection.get();
       for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
         await cartCollection.doc(doc.id).delete();
       }
-
       print("Products moved to orders and cart cleared");
 
-      // Navigate to CheckoutPage
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutPage()));
     } catch (e) {
       print("Error during checkout: $e");
     }
@@ -131,7 +158,7 @@ class _CartState extends State<Cart> {
                                 height: 80.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(cartProducts[i].imageUrl),
+                                    image: NetworkImage(cartProducts[i]['product'].imageUrl),
                                   ),
                                 ),
                               ),
@@ -141,14 +168,38 @@ class _CartState extends State<Cart> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      cartProducts[i].productName,
+                                      cartProducts[i]['product'].productName,
                                       style: aurabold25,
                                     ),
                                     Text(
-                                      cartProducts[i].price.toString(),
+                                      '\$${cartProducts[i]['product'].price.toStringAsFixed(2)}',
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: () async {
+                                        String documentId = cartProducts[i]['documentId'];
+                                        await deleteProductFromCart(documentId);
+                                      },
+                                      minWidth: 2,
+                                      height: 10,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      color: babyRose,
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(Icons.delete_outline, size: 30),
+                                          ),
+                                          Text(
+                                            'Delete',
+                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -167,8 +218,8 @@ class _CartState extends State<Cart> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Total', style: auraFontbold30),
-                          Text('\$ 480.00', // Replace with actual calculation
+                          Text('SubTotal', style: auraFontbold30),
+                          Text('\$${totalAmount.toStringAsFixed(2)}',
                               style: TextStyle(fontSize: 30)),
                         ],
                       ),
@@ -177,8 +228,7 @@ class _CartState extends State<Cart> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Delivery charge', style: TextStyle(fontSize: 20)),
-                        Text('\$ 40.00', // Replace with actual value
-                            style: TextStyle(fontSize: 20)),
+                        Text('\$40.00', style: TextStyle(fontSize: 20)),
                       ],
                     ),
                     Divider(),
@@ -187,9 +237,11 @@ class _CartState extends State<Cart> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('SubTotal', style: auraFontbold30),
-                          Text('\$ 520.00', // Replace with actual calculation
-                              style: TextStyle(fontSize: 30)),
+                          Text('Total', style: auraFontbold30),
+                          Text(
+                            '\$${(totalAmount + 40).toStringAsFixed(2)}', // Add delivery charge
+                            style: TextStyle(fontSize: 30),
+                          ),
                         ],
                       ),
                     ),
