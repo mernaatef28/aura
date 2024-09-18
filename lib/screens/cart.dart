@@ -9,16 +9,16 @@ import 'package:aura/localVariables/styles.dart';
 import 'package:aura/localVariables/classes/product.dart';
 
 class Cart extends StatefulWidget {
-  List<Map<String, dynamic>> cartProducts = [];
   @override
   _CartState createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
   final CollectionReference cartCollection = FirebaseFirestore.instance.collection('cart');
+  final CollectionReference orderCollection = FirebaseFirestore.instance.collection('orders');
 
-
-   // List to store products with their document IDs
+  List<Map<String, dynamic>> cartProducts = []; // List to store fetched products with their document IDs
+  double totalAmount = 0.0; // Variable to store the total price
 
   @override
   void initState() {
@@ -30,7 +30,8 @@ class _CartState extends State<Cart> {
   Future<void> fetchCartProducts() async {
     try {
       QuerySnapshot cartSnapshot = await cartCollection.get();
-      List<Map<String, dynamic>> fetchedProductsin = [] ;
+      List<Map<String, dynamic>> fetchedProducts = [];
+      double calculatedTotal = 0.0; // Temporary total amount
 
       for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
         Product product = Product(
@@ -43,17 +44,16 @@ class _CartState extends State<Cart> {
           discountPercentage: doc['discountPercentage'],
           isAvailable: doc['isAvailable'],
         );
-
-        fetchedProductsin.add({
+        fetchedProducts.add({
           'product': product,
-          'documentId': doc.id, // Store the document ID along with the product
-          'quantity': 1 , // Default to 1 if quantity is not set
+          'documentId': doc.id, // Storing document ID for deletion
         });
+        calculatedTotal += product.price; // Add product price to total
       }
 
       setState(() {
-        this.widget.cartProducts = fetchedProductsin;
-
+        cartProducts = fetchedProducts;
+        totalAmount = calculatedTotal; // Update total amount
       });
 
       print("Products fetched from cart collection");
@@ -62,49 +62,53 @@ class _CartState extends State<Cart> {
     }
   }
 
-  // Method to delete product from Firestore cart collection
+  // Method to delete product from Firebase Firestore
   Future<void> deleteProductFromCart(String documentId) async {
     try {
       await cartCollection.doc(documentId).delete();
       print("Product deleted from cart");
-      fetchCartProducts(); // Refresh cart after deletion
+
+      // Refetch the cart products to update the UI
+      fetchCartProducts();
     } catch (e) {
       print("Error deleting product from cart: $e");
-    }
-  }
-
-  // Method to update quantity in Firestore cart collection
-  Future<void> updateQuantity(String documentId, int newQuantity) async {
-    try {
-      await cartCollection.doc(documentId).update({'quantity': newQuantity});
-      print("Product quantity updated");
-      fetchCartProducts(); // Refresh cart after updating quantity
-    } catch (e) {
-      print("Error updating product quantity: $e");
     }
   }
 
   // Handle Checkout: Transfer products to 'orders' and clear 'cart'
   Future<void> handleCheckout() async {
     try {
-      // Transfer each product from 'cart' to 'orders'
-      for (Map<String, dynamic> item in this.widget.cartProducts) {
+      // Collect cart data
+      List<Map<String, dynamic>> cartData = [];
+      for (var item in cartProducts) {
         Product product = item['product'];
-        int quantity = item['quantity'] ?? 1; // Default to 1 if quantity is not set
-
-
+        cartData.add({
+          'productName': product.productName,
+          'price': product.price,
+          'imageUrl': product.imageUrl,
+          'categoryName': product.categoryName,
+          'shortDescription': product.shortDescription,
+          'rating': product.rating,
+          'discountPercentage': product.discountPercentage,
+          'isAvailable': product.isAvailable,
+        });
       }
 
-      // Clear the 'cart' collection
+      // Navigate to CheckoutPage with cart data
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CheckoutPage(cartData: cartData, total:this.totalAmount,),
+        ),
+      );
+
+      // Clear the 'cart' collection after navigation
       QuerySnapshot cartSnapshot = await cartCollection.get();
       for (QueryDocumentSnapshot doc in cartSnapshot.docs) {
         await cartCollection.doc(doc.id).delete();
       }
-
       print("Products moved to orders and cart cleared");
 
-      // Navigate to CheckoutPage
-      Navigator.push(context, MaterialPageRoute(builder: (context) => CheckoutPage(fetchedProducts: this.widget.cartProducts,)));
     } catch (e) {
       print("Error during checkout: $e");
     }
@@ -119,21 +123,13 @@ class _CartState extends State<Cart> {
         builder: (context, state) {
           Cartlogic obj = BlocProvider.of(context);
 
-          // Calculate the total dynamically
-          double total = 0;
-          for (var item in this.widget.cartProducts) {
-            double productPrice = item['product'].price;
-            int quantity = item['quantity'] ?? 1; // Default to 1 if quantity is not set
-            total += productPrice * quantity;
-          }
-
           return Scaffold(
             appBar: AppBar(
               elevation: 1,
               title: Text('Shopping cart', style: auraFontFayrozi30),
               centerTitle: true,
             ),
-            body: this.widget.cartProducts.isEmpty
+            body: cartProducts.isEmpty
                 ? Center(
               child: Text(
                 'Your cart is empty',
@@ -146,7 +142,7 @@ class _CartState extends State<Cart> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    for (int i = 0; i < this.widget.cartProducts.length; i++)
+                    for (int i = 0; i < cartProducts.length; i++)
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Container(
@@ -162,7 +158,7 @@ class _CartState extends State<Cart> {
                                 height: 80.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: NetworkImage(this.widget.cartProducts[i]['product'].imageUrl),
+                                    image: NetworkImage(cartProducts[i]['product'].imageUrl),
                                   ),
                                 ),
                               ),
@@ -172,26 +168,19 @@ class _CartState extends State<Cart> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      this.widget.cartProducts[i]['product'].productName,
+                                      cartProducts[i]['product'].productName,
                                       style: aurabold25,
                                     ),
                                     Text(
-                                      '\$${this.widget.cartProducts[i]['product'].price}',
+                                      '\$${cartProducts[i]['product'].price.toStringAsFixed(2)}',
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    Text(
-                                      'Qty: ${this.widget.cartProducts[i]['quantity']}',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(height: 8),
                                     MaterialButton(
                                       onPressed: () async {
-                                        String documentId = this.widget.cartProducts[i]['documentId'];
+                                        String documentId = cartProducts[i]['documentId'];
                                         await deleteProductFromCart(documentId);
                                       },
                                       minWidth: 2,
@@ -206,7 +195,10 @@ class _CartState extends State<Cart> {
                                             onPressed: () {},
                                             icon: Icon(Icons.delete_outline, size: 30),
                                           ),
-                                          Text('Delete', style: auraFontbold20),
+                                          Text(
+                                            'Delete',
+                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -226,8 +218,8 @@ class _CartState extends State<Cart> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Total', style: auraFontbold30),
-                          Text('\$${total.toStringAsFixed(2)}', // Use actual total calculation
+                          Text('SubTotal', style: auraFontbold30),
+                          Text('\$${totalAmount.toStringAsFixed(2)}',
                               style: TextStyle(fontSize: 30)),
                         ],
                       ),
@@ -236,8 +228,7 @@ class _CartState extends State<Cart> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Delivery charge', style: TextStyle(fontSize: 20)),
-                        Text('\$40.00', // Use actual delivery charge value
-                            style: TextStyle(fontSize: 20)),
+                        Text('\$40.00', style: TextStyle(fontSize: 20)),
                       ],
                     ),
                     Divider(),
@@ -246,9 +237,11 @@ class _CartState extends State<Cart> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('SubTotal', style: auraFontbold30),
-                          Text('\$${(total + 40).toStringAsFixed(2)}', // Subtotal calculation including delivery charge
-                              style: TextStyle(fontSize: 30)),
+                          Text('Total', style: auraFontbold30),
+                          Text(
+                            '\$${(totalAmount + 40).toStringAsFixed(2)}', // Add delivery charge
+                            style: TextStyle(fontSize: 30),
+                          ),
                         ],
                       ),
                     ),
