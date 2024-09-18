@@ -1,9 +1,13 @@
+
 import 'package:flutter/material.dart';
 import 'package:finalproj/signupPage.dart';
+
+import 'package:aura/screens/adminPanel.dart/adminPanelHome.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'HomePage.dart';
-import 'admin.dart';
+import 'package:aura/screens/productHomePage.dart';
+import 'package:aura/signupPage.dart';
 import 'colors.dart';
 import 'notification.dart';
 
@@ -37,8 +41,10 @@ class _LoginPageState extends State<LoginPage> {
     try {
       if (email == 'jana.hagar@gmail.com' && password == '123456') {
         _showNotification("Admin login successful!", false);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AdminPage()));
+
+        // navigate to admin page
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AdminPanel()));
+
       } else {
         QuerySnapshot result = await users.where('email', isEqualTo: email)
             .get();
@@ -49,8 +55,10 @@ class _LoginPageState extends State<LoginPage> {
           );
           if (user != null) {
             _showNotification("Login successful!", false);
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
+
+            // navigate to the main shop page
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProductHomePage()));
+
           }
         } else {
           _showNotification("Email does not exist!", true);
@@ -70,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         color: AppColors.lightBlue,
+
         child: Center( // Wrap with Center to avoid overflow
           child: SingleChildScrollView( // Wrap the Column with SingleChildScrollView
             child: Padding(

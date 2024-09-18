@@ -1,15 +1,23 @@
-
-import 'package:aura/screens//confirmedPage.dart';
+import 'package:aura/screens/confirmedPage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:aura/localVariables/local_variables.dart';
+import 'package:aura/localVariables/styles.dart';
+
+import 'cart.dart';
 
 class CheckoutPage extends StatefulWidget {
+  late double total;
+  final List<Map<String, dynamic>> cartData;
+
+  CheckoutPage({required this.cartData,required this.total});
+
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
-  CollectionReference users = FirebaseFirestore.instance.collection('checkout');
+  CollectionReference checkoutCollection = FirebaseFirestore.instance.collection('checkout');
 
   // Text Controllers
   final TextEditingController firstNameController = TextEditingController();
@@ -18,7 +26,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController countryController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>(); //  Key for validation
+  final _formKey = GlobalKey<FormState>(); // Key for validation
   String? _deliveryOption = 'Cash On Delivery';
 
   @override
@@ -32,34 +40,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   Future<void> _submitCheckout() async {
-    // Validate the form
     if (!_formKey.currentState!.validate()) {
       return; // If the form is not valid, don't proceed
     }
 
-    // Ensure that 'Cash On Delivery' is selected
     if (_deliveryOption != 'Cash On Delivery') {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please select 'Cash On Delivery'")),
       );
-
+      return;
     }
 
-
-
-
     try {
-      await users.add({
+      await checkoutCollection.add({
         'firstName': firstNameController.text,
         'lastName': lastNameController.text,
         'address': addressController.text,
         'mobileNumber': mobileNumberController.text,
         'country': countryController.text,
         'deliveryOption': _deliveryOption,
+        'cartData': widget.cartData, // Add cart data here
       });
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Checkout successful!")),
       );
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ConfirmPage()),
@@ -75,15 +81,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Shipping Address',
-          style: TextStyle(
-            color: Color(0xff51858C),
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Text('Shipping Address', style: auraFontFayrozi25),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Cart()),
+            );
+          },
+          icon: Icon(Icons.arrow_back_ios_new_outlined),
         ),
-        leading: Icon(Icons.arrow_back_ios_new_outlined),
       ),
       body: Container(
         margin: const EdgeInsets.all(16.0),
@@ -91,9 +98,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
         decoration: BoxDecoration(
           border: Border.all(
             color: Colors.blueGrey,
-            width: 2, // Border width
+            width: 2,
           ),
-          borderRadius: BorderRadius.circular(15), // Rounded corners
+          borderRadius: BorderRadius.circular(15),
         ),
         child: SingleChildScrollView(
           child: Form(
@@ -244,12 +251,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Order Summary', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                        Text('Order Summary', style: aurabold25),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('SubTotal', style: TextStyle(fontSize: 25)),
-                            Text('\$ 480.00', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                            Text('\$ ${this.widget.total}', style: aurabold25),
                           ],
                         ),
                         SizedBox(height: 8),
@@ -264,8 +271,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                            Text('\$ 520.00', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                            Text('Total', style: auraFontbold30),
+                            Text('\$ ${this.widget.total+40}', style: aurabold25),
                           ],
                         ),
                       ],
@@ -277,7 +284,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   padding: const EdgeInsets.only(top: 16.0),
                   child: MaterialButton(
                     onPressed: _submitCheckout,
-                    color: Color(0xfff6CAC9),
+                    color: babyRose,
                     child: Text(
                       "Checkout",
                       style: TextStyle(fontSize: 20, color: Colors.black),
