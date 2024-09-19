@@ -7,8 +7,9 @@ class Product {
   final double? rating;
   final double? discountPercentage;
   final bool isAvailable;
+  final String ProductDetailsDescription ;
 
-  Product({
+  Product( {
     required this.imageUrl,
     required this.categoryName,
     required this.productName,
@@ -17,5 +18,6 @@ class Product {
     this.rating,
     this.discountPercentage,
     this.isAvailable = true,
+   this.ProductDetailsDescription = "A soothing toner for sensitive skin.",
   });
 }

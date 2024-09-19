@@ -85,6 +85,7 @@ class Productlistdisplay extends StatelessWidget {
               imageUrl: product['ImageUrl'],
               categoryName: product['CategoryName'],
               shortDescription: product['ProductShortDescription'],
+              ProductDetailsDescription: product['ProductDetailsDescription'],
               rating: rating,
               discountPercentage: discountPercentage,
               isAvailable: true,
@@ -109,12 +110,7 @@ class Productlistdisplay extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => produactDetailspage(
-                            imageUrl: Image.network(product['ImageUrl']),
-                            productName: product['ProductName'],
-                            categoryName: product['CategoryName'],
-                            price: price,
-                          ),
+                          builder: (context) => ProductDetailsPage(product: productObject, )
                         ),
                       );
                     },

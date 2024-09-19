@@ -23,73 +23,76 @@ class AddProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(5.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: Colors.grey[100],
-        ),
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 100.0,
-              height: 100.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(addProductImageAssets),
-                  fit: BoxFit.cover, // Ensures image fits nicely
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.grey[100],
+          ),
+          padding: EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 100.0,
+                height: 100.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(addProductImageAssets),
+                    fit: BoxFit.cover, // Ensures image fits nicely
+                  ),
+                  borderRadius: BorderRadius.circular(25.0),
                 ),
-                borderRadius: BorderRadius.circular(25.0),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    addproductName,
-                    style: aurabold25,
-                  ),
-                  Text(
-                    addProductCategory,
-                    style: auraFontboldgray15,
-                  ),
-                  SizedBox(height: 8),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        MaterialButton(
-                          onPressed: editPagePush,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          color: firozi,
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(width: 30),
-                        MaterialButton(
-                          onPressed: () => deleteProduct(documentId), // Pass the document ID to the delete function
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          color: babyRose,
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+              Padding(
+                padding: const EdgeInsets.only(left: 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      addproductName,
+                      style: aurabold25,
                     ),
-                  ),
-                ],
+                    Text(
+                      addProductCategory,
+                      style: auraFontboldgray15,
+                    ),
+                    SizedBox(height: 8),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          MaterialButton(
+                            onPressed: editPagePush,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            color: firozi,
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: 30),
+                          MaterialButton(
+                            onPressed: () => deleteProduct(documentId), // Pass the document ID to the delete function
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            color: babyRose,
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

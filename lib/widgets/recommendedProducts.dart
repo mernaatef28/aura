@@ -29,7 +29,7 @@ Widget recommendedProducts(BuildContext context) => SingleChildScrollView(
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => produactDetailspage(imageUrl:Image.network( products[index].imageUrl), productName:  products[index].productName, categoryName: products[index].categoryName, price: products[index].price , ) ,
+                    builder: (context) => ProductDetailsPage(product: products[index], ) ,
                   ),
                 );
               },
