@@ -15,7 +15,7 @@
 
 ## **Admin Panel**
  
-<img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/5.png?raw=true" alt="project-screenshot" width="i" height="/">
+<img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/6.png?raw=true" alt="project-screenshot" width="i" height="/">
 
 <img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/4.png?raw=true" alt="project-screenshot" width="/" height="/">
 
