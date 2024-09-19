@@ -139,3 +139,6 @@ Technologies used in the project:
 *   sqlite
 *   firebase
 *   bloc
+  
+Meet Our team : 
+<img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/10.png?raw=true" alt="project-screenshot" width="/" height="400/">
