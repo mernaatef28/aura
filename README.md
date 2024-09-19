@@ -8,6 +8,15 @@
 
 <img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/2.png?raw=true" alt="project-screenshot" width="/" height="/">
 
+## **User Panel**
+ 
+<img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/5.png?raw=true" alt="project-screenshot" width="i" height="/">
+
+
+## **Admin Panel**
+ 
+<img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/5.png?raw=true" alt="project-screenshot" width="i" height="/">
+
 <img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/4.png?raw=true" alt="project-screenshot" width="/" height="/">
 
 <img src="https://github.com/mernaatef28/aura/blob/main/assets/presentslides/3.png?raw=true" alt="project-screenshot" width="/" height="/">
