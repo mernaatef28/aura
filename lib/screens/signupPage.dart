@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'LoginPage.dart';
-import 'colors.dart'; // Assuming this contains the color definitions like AppColors
+import '../localVariables/colors.dart'; // Assuming this contains the color definitions like AppColors
 
 class SignupPage extends StatefulWidget {
   @override

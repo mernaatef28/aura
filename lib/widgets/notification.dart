@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'colors.dart';
+import '../localVariables/colors.dart';
 
 class NotificationPage extends StatelessWidget {
   final String message;

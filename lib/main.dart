@@ -1,6 +1,6 @@
 
 
-import 'package:aura/LoginPage.dart';
+import 'package:aura/screens/LoginPage.dart';
 import 'package:aura/screens/CategoryDisplay.dart';
 
 import 'package:aura/screens/adminPanel/addProduct.dart';

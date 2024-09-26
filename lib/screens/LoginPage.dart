@@ -1,12 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:aura/screens/productHomePage.dart';
-import 'package:aura/signupPage.dart';
-import 'colors.dart';
-import 'notification.dart';
-import 'screens/adminPanel/adminPanelHome.dart';
+import 'package:aura/screens/signupPage.dart';
+import '../localVariables/colors.dart';
+import '../widgets/notification.dart';
+import 'adminPanel/adminPanelHome.dart';
 
 class LoginPage extends StatefulWidget {
   @override
