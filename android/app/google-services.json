@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "330431582490",
+    "project_id": "aura-90d09",
+    "storage_bucket": "aura-90d09.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:330431582490:android:ed8fbc200df4e107545ca3",
+        "android_client_info": {
+          "package_name": "com.example.aura"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEg0b5GNn6X2I82alVyHJdBCr0MJLdhjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
